@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itheima.health.dao.CheckGroupDao">
+    <insert id="add" parameterType="checkGroup">
+    <selectKey resultType="int" keyProperty="id" order="AFTER">
+        select last_insert_id()
+    </selectKey>
+
+        insert into t_checkgroup (code,name,helpCode,sex,remark,attention) values (#{code}, #{name}, #{helpCode}, #{sex}, #{remark}, #{attention})
+    </insert>
+    <!--操作中间关系表-->
+    <insert id="addCheckGroupCheckItemByCheckGroupId">
+        insert into t_checkgroup_checkitem (checkgroup_id,checkitem_id) values (#{arg0},#{arg1})
+    </insert>
+
+    <!--分页查询-->
+    <select id="findPage" parameterType="String" resultType="CheckGroup">
+        select * from t_checkgroup
+        <if test="value != null and value.length > 0">
+            where code=#{value} or name like concat("%",#{value},"%") or helpCode=#{value}
+        </if>
+    </select>
+
+    <!--编辑检查组-->
+    <select id="findById" parameterType="int" resultType="checkItem">
+        select * from t_checkgroup where id = #{id}
+    </select>
+
+    <!--查询检查组所对应的检查项-->
+    <select id="findCheckItemByCheckGroupId" parameterType="int" resultType="int">
+        select checkitem_id from t_checkgroup_checkitem where checkgroup_id=#{checkgroup_id}
+    </select>
+
+    <update id="edit" parameterType="checkGroup">
+        update t_checkgroup
+        <set>
+            <if test="code != null and code.length > 0">
+            code=#{code},
+            </if>
+            <if test="name != null and name.length > 0">
+            name=#{name},
+            </if>
+            <if test="helpCode != null and helpCode.length > 0">
+            helpCode=#{helpCode},
+            </if>
+            <if test="sex != null and sex.length > 0">
+            sex=#{sex},
+            </if>
+            <if test="remark != null and remark.length > 0">
+            remark=#{remark},
+            </if>
+            <if test="attention != null and attention.length > 0">
+            attention=#{attention},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <!--先删除中间关系表的关联数据-->
+    <delete id="deleteCheckGroupCheckItemByCheckGroupId" parameterType="int">
+        delete from t_checkgroup_checkitem where checkgroup_id=#{checkgroup_id}
+    </delete>
+
+
+    <delete id="delete" parameterType="int">
+        delete from t_checkgroup where id=#{id}
+    </delete>
+
+    <!--查询所有的检查组   -->
+    <select id="findAll" resultType="checkGroup">
+        select * from t_checkgroup
+    </select>
+
+
+    <!--移动端查询套餐所对应的检查组-->
+    <select id="findCheckgroupListById" parameterType="int" resultMap="checkgroupmap">
+        SELECT * FROM t_checkgroup WHERE id IN (SELECT checkgroup_id FROM t_setmeal_checkgroup WHERE setmeal_id = #{setmealId});
+    </select>
+
+    <resultMap id="checkgroupmap" type="checkgroup">
+        <id property="id" column="id"></id>
+        <result property="code" column="code"></result>
+        <result property="name" column="name"></result>
+        <result property="helpCode" column="helpCode"></result>
+        <result property="sex" column="sex"></result>
+        <result property="remark" column="remark"></result>
+        <result property="attention" column="attention"></result>
+        <collection property="checkItems" column="id" select="com.itheima.health.dao.CheckItemDao.findCheckItemListById"></collection>
+    </resultMap>
+
+    
+</mapper>
+

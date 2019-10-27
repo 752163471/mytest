@@ -1,0 +1,20 @@
+package com.itheima.health.constant;
+
+/**
+ * @ClassName RedisConstant
+ * @Description TODO
+ * @Author ly
+ * @Company 深圳黑马程序员
+ * @Date 2019/6/29 17:21
+ * @Version V1.0
+ */
+public class RedisConstant {
+    //套餐图片所有图片名称
+    public static final String SETMEAL_PIC_RESOURCES = "setmealPicResources";
+    //套餐图片保存在数据库中的图片名称
+    public static final String SETMEAL_PIC_DB_RESOURCES = "setmealPicDbResources";
+    //移动端套餐列表
+    public static final String SETMEAL_LIST_RESOURCES = "setmealListResources";
+    //移动端套餐详情
+    public static final String SETMEAL_DETAILS_RESOURCES = "setmealDetailsResources";
+}

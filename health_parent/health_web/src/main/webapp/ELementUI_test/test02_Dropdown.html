@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dropdown下拉菜单</title>
+
+    <style>
+        .el-dropdown-link {
+            cursor: pointer;
+            color: #409EFF;
+        }
+        .el-icon-arrow-down {
+            font-size: 12px;
+        }
+        .demonstration {
+            display: block;
+            color: #8492a6;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+    </style>
+
+    <!-- 引入ElementUI样式 -->
+    <link rel="stylesheet" href="../plugins/elementui/index.css">
+    <script src="../js/vue.js"></script>
+    <!-- 引入ElementUI组件库 -->
+    <script src="../plugins/elementui/index.js"></script>
+</head>
+<body>
+
+<div id="demo">
+    <h1>Dropdown下拉菜单-hover激活事件</h1>
+    <el-dropdown>
+        <el-button type="primary">
+            下拉菜单<i></i>
+        </el-button>
+        <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>退出系统</el-dropdown-item>
+            <el-dropdown-item disabled>修改密码</el-dropdown-item>
+            <el-dropdown-item divided>联系管理员</el-dropdown-item>
+        </el-dropdown-menu>
+    </el-dropdown>
+
+    <hr>
+
+    <h1>Dropdown下拉菜单-click点击事件</h1>
+
+    <el-dropdown trigger="click">
+      <span class="el-dropdown-link">
+        下拉菜单
+      </span>
+        <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>退出系统</el-dropdown-item>
+            <el-dropdown-item disabled>修改密码</el-dropdown-item>
+            <el-dropdown-item divided>联系管理员</el-dropdown-item>
+        </el-dropdown-menu>
+    </el-dropdown>
+
+    <h1>Dropdown下拉菜单-按钮下拉菜单</h1>
+
+    <el-dropdown split-button trigger="click">
+        下拉菜单
+        <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>退出系统</el-dropdown-item>
+            <el-dropdown-item disabled>修改密码</el-dropdown-item>
+            <el-dropdown-item divided>联系管理员</el-dropdown-item>
+
+        </el-dropdown-menu>
+    </el-dropdown>
+</div>
+
+<script>
+    new Vue({
+        el:"#demo"
+    })
+</script>
+
+</body>
+</html>

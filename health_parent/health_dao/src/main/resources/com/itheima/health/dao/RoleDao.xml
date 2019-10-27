@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itheima.health.dao.RoleDao">
+
+    <select id="findAll" resultType="role">
+        select * from t_role
+    </select>
+
+    <select id="findRolesByUserId" parameterType="int" resultMap="roleMap">
+        SELECT r.* FROM t_role r,t_user_role ur WHERE r.`id`=ur.`role_id` AND ur.`user_id` = #{userId}
+    </select>
+    
+    <resultMap id="roleMap" type="role">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="keyword" property="keyword"></result>
+        <result column="description" property="description"></result>
+        <collection property="permissions" column="id" select="com.itheima.health.dao.PermissionDao.findPermissionsByRoleId"></collection>
+    </resultMap>
+
+    
+    <select id="findRoleByUsername" parameterType="int" resultMap="roleMap2">
+        SELECT r.* FROM t_user_role ur,t_role r WHERE r.`id`=ur.`role_id` AND ur.`user_id` = #{userId}
+    </select>
+
+    <resultMap id="roleMap2" type="role">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="keyword" property="keyword"></result>
+        <result column="description" property="description"></result>
+        <collection property="menus" column="id" select="com.itheima.health.dao.MenuDao.findMenusByRoleId"></collection>
+    </resultMap>
+
+
+    <!--新增角色-->
+    <insert id="add" parameterType="role">
+        <selectKey resultType="int" keyProperty="id" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+        insert into t_role (name, keyword, description) values (#{name}, #{keyword}, #{description})
+
+    </insert>
+    
+    <!--操作中间关系表-->
+    <insert id="addRolePermissionByRoleId">
+        insert into t_role_permission (role_id,permission_id) values (#{role_id},#{permission_id})
+    </insert>
+
+
+    <!--分页查询-->
+    <select id="findPage" parameterType="string" resultType="role">
+        select * from t_role
+        <if test="value != null and value.length > 0">
+            where name like concat('%',#{value},'%') or keyword = #{value}
+        </if>
+    </select>
+
+    <!--往角色和菜单的中间关系表添加数据-->
+    <insert id="addRoleMenuByRoleId">
+        insert into t_role_menu (role_id,menu_id) values (#{role_id},#{menu_id})
+    </insert>
+
+    <!--先删除中间关系表的数据-->
+    <delete id="deleteRolePermissionByRoleId" parameterType="int">
+        delete from t_role_permission where role_id=#{roleId}
+    </delete>
+
+    <!--再删除角色和菜单的中间关系表-->
+    <delete id="deleteRoleMenuByRoleId" parameterType="int">
+        delete from t_role_menu where role_id = #{roleId}
+    </delete>
+    <!--删除-->
+    <delete id="deleteRoleByRoleId" parameterType="int">
+        delete from t_role where id={roleId}
+    </delete>
+</mapper>
+

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="com.itheima.health.dao.MemberDao">
+    
+    <select id="findByTelephone" parameterType="String" resultType="member">
+        select * from t_member where phoneNumber=#{phoneNumber}
+    </select>
+
+    <insert id="add" parameterType="member">
+    <selectKey resultType="int" keyProperty="id" order="AFTER">
+        select last_insert_id()
+    </selectKey>
+        insert into t_member (fileNumber, name, sex, idCard, phoneNumber, regTime, password, email, birthday, remark) values (#{fileNumber}, #{name}, #{sex}, #{idCard}, #{phoneNumber}, #{regTime}, #{password}, #{email}, #{birthday}, #{remark})
+    </insert>
+
+    <!--通过注册时间查询会员-->
+    <select id="findMemberByRegTime" parameterType="string" resultType="Integer">
+        select count(*) from t_member where regTime &lt;= #{value}
+    </select>
+
+    <!--通过性别查询会员-->
+    <select id="findMemberBySex" resultType="map">
+        SELECT sex AS name,COUNT(*) AS value  FROM t_member GROUP BY sex;
+    </select>
+
+    <!--查询今日新增会员数-->
+    <select id="findTodayNewMember" parameterType="String" resultType="int">
+        SELECT COUNT(*) FROM t_member WHERE regTime = #{today}
+    </select>
+
+    <!--查询总会员数-->
+    <select id="findTotalMember" resultType="int">
+        SELECT COUNT(*) FROM t_member
+    </select>
+
+    <!--查询本周或本月所新增的会员数-->
+    <select id="findAddNewMember" parameterType="string" resultType="int">
+        SELECT COUNT(*) FROM t_member WHERE regTime >= #{thisWeekOrMonth}
+    </select>
+
+    <!--按照年龄段查询会员数量-->
+    <select id="findMemberByAge" resultType="map">
+        SELECT (CASE
+        WHEN a.age IS NULL THEN 'unknown'
+        WHEN a.age &lt; 18 THEN '0-18岁'
+        WHEN a.age BETWEEN 18 AND 30 THEN '18-30岁'
+        WHEN a.age BETWEEN 31 AND 45 THEN '30-45岁'
+        WHEN a.age &gt; 45 THEN '45岁以上'
+        END) AS name,
+        COUNT(*) value
+        FROM (SELECT NOW() AS "today",birthday,TIMESTAMPDIFF(YEAR, birthday, CURDATE()) AS age FROM t_member ) a GROUP BY NAME
+    </select>
+</mapper>

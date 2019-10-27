@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <!--配置应用名字-->
+    <dubbo:application name="health_service"/>
+    <!--连接zookeeper-->
+    <dubbo:registry address="zookeeper://127.0.0.1" port="2181"/>
+    <!--服务提供者需要配置协议-->
+    <dubbo:protocol name="dubbo" port="20887" host="192.168.112.1"/>
+    <!--配置dubbo的注解扫描，发布服务，也会开启spring的组件扫描-->
+    <dubbo:annotation package="com.itheima.health.service"/>
+
+</beans>
